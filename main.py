@@ -26,13 +26,16 @@ def main():
     if "\n" in LINE or LINE != LINE.strip():
         sys.exit("line must be a single line with no surrounding space")
     data = LINE.encode("utf-8")
-    os.makedirs(out_dir, exist_ok=True)
-    with open(path, "wb") as f:
-        f.write(data)
-    os.chmod(path, 0o644)
-    with open(path, "rb") as f:
-        if f.read() != data:
-            sys.exit("read-back mismatch")
+    try:
+        os.makedirs(out_dir, exist_ok=True)
+        with open(path, "wb") as f:
+            f.write(data)
+        os.chmod(path, 0o644)
+        with open(path, "rb") as f:
+            if f.read() != data:
+                sys.exit("read-back mismatch")
+    except OSError as exc:
+        sys.exit(f"cannot write {path}: {exc}")
     print(f"wrote {len(data)} bytes to {path}")
 
 
